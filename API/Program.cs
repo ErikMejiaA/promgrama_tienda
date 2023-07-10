@@ -1,3 +1,4 @@
+using API.Extensions;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+//Agregamos el metodo de extension para los controladores
+builder.Services.ConfigureCors();
+//metodo que permite gerar la conexion con la Db
 builder.Services.AddDbContext<MiTiendaContext>(optionsBuilder =>
 {
     string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -40,6 +44,8 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Ocurrió un error durante la migración");
     }
 }
+
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
